@@ -6,64 +6,138 @@
     <style type="text/css">
         <!--
         #container {
-            width: 676px;
-            height: 676px;
             background-color: #dddddd;
             margin-left: auto;
             margin-right: auto;
         }
-
         -->
     </style>
 </head>
 <body>
 
 <div id="container">
-    <canvas id="dartboard-container" width="676" height="676"></canvas>
+    <canvas id="dartboard-container"></canvas>
 </div>
 
 <script>
-    var container = document.getElementById('dartboard-container');
-    var canvas = container.getContext("2d");
+
+    // Define the distances to the bulls eye in mm
+    var distBoardEdge = 224;
+    var distOuterDouble = 169;
+    var distInnerDouble = 160;
+    var distOuterTriple = 107;
+    var distInnerTriple = 96;
+    var distSingleBull = 17;
+    var distDoubleBull = 7;
+
+    // Factor to increase the size
+    var increaseFactor = 1.5;
+
+    var width = height = 2 * (increaseFactor * distBoardEdge);
+    var middleX = middleY = Math.round(width/2);
+
+    var htmlContainer = document.getElementById("container");
+    htmlContainer.style.width = width + "px";
+    htmlContainer.style.height = height + "px";
+
+    var dartboardContainer = document.getElementById('dartboard-container');
+    dartboardContainer.width = width;
+    dartboardContainer.height = height;
+
+    var canvas = dartboardContainer.getContext("2d");
+
+    // Board edge
+    canvas.beginPath();
+    canvas.fillStyle = "#000000";
+    canvas.arc(middleX, middleY, (increaseFactor * distBoardEdge), 0, 2 * Math.PI);
+    canvas.fill();
+    canvas.closePath();
+
+    console.log(middleX, middleY);
 
     // Outer double
-    canvas.fillStyle = "#989898";
-    canvas.arc(338, 338, 338, 0, 2 * Math.PI);
+    canvas.beginPath();
+    canvas.fillStyle = "#bb0a02";
+    canvas.arc(middleX, middleY, (increaseFactor * distOuterDouble), 0, 2 * Math.PI);
     canvas.fill();
     canvas.closePath();
 
     // Inner double
     canvas.beginPath();
-    canvas.fillStyle = "#b4b4b4";
-    canvas.arc(338, 338, 320, 0, 2 * Math.PI);
+    canvas.fillStyle = "#ffffff";
+    canvas.arc(middleX, middleY, (increaseFactor * distInnerDouble), 0, 2 * Math.PI);
     canvas.fill();
     canvas.closePath();
 
     // Outer triple
     canvas.beginPath();
-    canvas.fillStyle = "#d4d4d4";
-    canvas.arc(338, 338, 214, 0, 2 * Math.PI);
+    canvas.fillStyle = "#069136";
+    canvas.arc(middleX, middleY, (increaseFactor * distOuterTriple), 0, 2 * Math.PI);
     canvas.fill();
     canvas.closePath();
 
     canvas.beginPath();
-    canvas.fillStyle = "#e2e2e2";
-    canvas.arc(338, 338, 192, 0, 2 * Math.PI);
-    canvas.fill();
-    canvas.closePath();
-
-    canvas.beginPath();
-    canvas.fillStyle = "#bb0a02";
-    canvas.arc(338, 338, 34, 0, 2 * Math.PI);
+    canvas.fillStyle = "#fdf6ae";
+    canvas.arc(middleX, middleY, (increaseFactor * distInnerTriple), 0, 2 * Math.PI);
     canvas.fill();
     canvas.closePath();
 
     canvas.beginPath();
     canvas.fillStyle = "#069136";
-    canvas.arc(338, 338, 14, 0, 2 * Math.PI);
+    canvas.arc(middleX, middleY, (increaseFactor * distSingleBull), 0, 2 * Math.PI);
     canvas.fill();
     canvas.closePath();
 
+    canvas.beginPath();
+    canvas.fillStyle = "#bb0a02";
+    canvas.arc(middleX, middleY, (increaseFactor * distDoubleBull), 0, 2 * Math.PI);
+    canvas.fill();
+    canvas.closePath();
+
+    // We now have to draw the lines as the field separators
+    for (var i = 0; i < 10; i++) {
+
+        // Calc width of the areas
+        var th = Math.PI * 11/20 - i * Math.PI/10;
+
+        var outerDouble = increaseFactor * distBoardEdge;
+        var singleBull = increaseFactor * distSingleBull;
+
+        // Define the line width
+        canvas.lineWidth = 1;
+
+        var startX = Math.round((outerDouble-1) + (outerDouble * Math.cos(th)));
+        var startY = Math.round((outerDouble+1) - (outerDouble * Math.sin(th)));
+        var endX = Math.round((outerDouble-1) + singleBull * Math.cos(th));
+        var endY = Math.round((outerDouble+1) - singleBull * Math.sin(th));
+
+        canvas.beginPath();
+        canvas.moveTo(startX, startY);
+        canvas.lineTo(endX, endY);
+        canvas.stroke();
+        canvas.closePath();
+
+        startX = Math.round((outerDouble-1) + (outerDouble * Math.cos(th + Math.PI)));
+        startY = Math.round((outerDouble+1) - (outerDouble * Math.sin(th + Math.PI)));
+        endX = Math.round((outerDouble-1) + singleBull * Math.cos(th + Math.PI));
+        endY = Math.round((outerDouble+1) - singleBull * Math.sin(th + Math.PI));
+
+        canvas.beginPath();
+        canvas.moveTo(startX, startY);
+        canvas.lineTo(endX, endY);
+        canvas.stroke();
+        canvas.closePath();
+
+    }
+
+    dartboardContainer.addEventListener('click', function(e) {
+        // Draw a hit circle
+        canvas.beginPath();
+        canvas.fillStyle = "green";
+        canvas.arc(e.layerX, e.layerY, 3, 0, 2 * Math.PI);
+        canvas.fill();
+        canvas.closePath();
+    });
 
 </script>
 

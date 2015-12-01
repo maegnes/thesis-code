@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <title>Canvas Dartboard</title>
+    <meta charset="utf-8">
+    <style type="text/css">
+        <!--
+        #container {
+            width: 676px;
+            height: 676px;
+            background-color: #dddddd;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        -->
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <canvas id="dartboard-container" width="676" height="676"></canvas>
+</div>
+
+<script>
+    var container = document.getElementById('dartboard-container');
+    var canvas = container.getContext("2d");
+
+    // Outer double
+    canvas.fillStyle = "#989898";
+    canvas.arc(338, 338, 338, 0, 2 * Math.PI);
+    canvas.fill();
+    canvas.closePath();
+
+    // Inner double
+    canvas.beginPath();
+    canvas.fillStyle = "#b4b4b4";
+    canvas.arc(338, 338, 320, 0, 2 * Math.PI);
+    canvas.fill();
+    canvas.closePath();
+
+    // Outer triple
+    canvas.beginPath();
+    canvas.fillStyle = "#d4d4d4";
+    canvas.arc(338, 338, 214, 0, 2 * Math.PI);
+    canvas.fill();
+    canvas.closePath();
+
+    canvas.beginPath();
+    canvas.fillStyle = "#e2e2e2";
+    canvas.arc(338, 338, 192, 0, 2 * Math.PI);
+    canvas.fill();
+    canvas.closePath();
+
+    canvas.beginPath();
+    canvas.fillStyle = "#bb0a02";
+    canvas.arc(338, 338, 34, 0, 2 * Math.PI);
+    canvas.fill();
+    canvas.closePath();
+
+    canvas.beginPath();
+    canvas.fillStyle = "#069136";
+    canvas.arc(338, 338, 14, 0, 2 * Math.PI);
+    canvas.fill();
+    canvas.closePath();
+
+
+</script>
+
+</body>
+</html>

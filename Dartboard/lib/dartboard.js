@@ -1,3 +1,12 @@
+/**
+ * Class to draw a dartboard as a html5 canvas and mark hits by clicking on the board
+ *
+ * @param htmlContainer - the html container the canvas is wrapped in
+ * @param canvasContainer - the <canvas/> element
+ * @param callbackFunction - a optional callback. being called after every throw
+ * 
+ * @constructor
+ */
 Dartboard = function (htmlContainer, canvasContainer, callbackFunction) {
 
     /**

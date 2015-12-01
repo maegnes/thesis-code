@@ -85,12 +85,6 @@ Dartboard = function (htmlContainer, canvasContainer, callbackFunction) {
     this.increaseFactor = 2;
 
     /**
-     * The order of the numbers on the dartboard
-     * @type {Array}
-     */
-    this.numbersOrder = [20,1,18,4,13,6,10,15,2,17,3,19,7,16,8,11,14,9,12,5];
-
-    /**
      * init() called?
      *
      * @type {boolean}
@@ -115,6 +109,13 @@ Dartboard = function (htmlContainer, canvasContainer, callbackFunction) {
      * @type {number}
      */
     this.height = 0;
+
+    /**
+     * The amount of currently thrown darts
+     *
+     * @type {number}
+     */
+    this.thrownDarts = 0;
 
     /**
      * Coordinates of the dartboard center
@@ -313,6 +314,8 @@ Dartboard = function (htmlContainer, canvasContainer, callbackFunction) {
             return false;
         }
 
+        this.thrownDarts++;
+
         this.canvas.beginPath();
         this.canvas.fillStyle = "#00ccff";
         this.canvas.arc(e.layerX, e.layerY, 2, 0, 2 * Math.PI);
@@ -373,7 +376,7 @@ Dartboard = function (htmlContainer, canvasContainer, callbackFunction) {
      */
     this.notify = function() {
         if ('function' === typeof this.callback) {
-            this.callback(this.hitAmounts);
+            this.callback(this.hitAmounts, this.thrownDarts);
         }
     };
 
@@ -387,7 +390,9 @@ Dartboard = function (htmlContainer, canvasContainer, callbackFunction) {
         this.canvas.closePath();
 
         // Redraw the dartboard!
+        this.thrownDarts = 0;
         this.resetHitAmounts();
+        this.notify();
         this.draw();
     };
 

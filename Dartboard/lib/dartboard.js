@@ -4,7 +4,7 @@
  * @param htmlContainer - the html container the canvas is wrapped in
  * @param canvasContainer - the <canvas/> element
  * @param callbackFunction - a optional callback. being called after every throw
- * 
+ *
  * @constructor
  */
 Dartboard = function (htmlContainer, canvasContainer, callbackFunction) {
@@ -83,6 +83,12 @@ Dartboard = function (htmlContainer, canvasContainer, callbackFunction) {
      * @type {number}
      */
     this.increaseFactor = 2;
+
+    /**
+     * The order of the numbers on the dartboard
+     * @type {Array}
+     */
+    this.numbersOrder = [20,1,18,4,13,6,10,15,2,17,3,19,7,16,8,11,14,9,12,5];
 
     /**
      * init() called?
@@ -187,6 +193,7 @@ Dartboard = function (htmlContainer, canvasContainer, callbackFunction) {
         } else {
             this.drawCircles();
             this.drawLines();
+            this.drawNumbers();
             this.boardDrawn = true;
         }
     };
@@ -273,6 +280,30 @@ Dartboard = function (htmlContainer, canvasContainer, callbackFunction) {
     };
 
     /**
+     * Draws the numbers into the areas
+     */
+    this.drawNumbers = function() {
+
+        this.canvas.fillStyle = "#ffffff";
+        this.canvas.font = 30 * this.increaseFactor + "px Arial";
+
+        // Numbers with their positions
+        var data = [
+            [20, 205, 50], [1, 270, 55], [18, 315, 80], [4, 365, 125],
+            [13, 390, 180], [6, 400, 235], [10, 390, 295], [15, 365, 345], [2, 325, 390],
+            [17, 260, 415], [3, 215, 430], [19, 145, 415], [7, 100, 390],
+            [16, 50, 345], [8, 40, 295], [11, 15, 235], [14, 20, 180],
+            [9, 60, 125], [12, 85, 80], [5, 155, 55]
+        ];
+
+        this.canvas.beginPath();
+        for (var i = 0; i < data.length; i++) {
+            this.canvas.fillText(data[i][0], (this.increaseFactor * data[i][1]), (this.increaseFactor * data[i][2]));
+        }
+        this.canvas.closePath();
+    };
+
+    /**
      * Mark a hit on the dartboard
      * @param e
      */
@@ -333,7 +364,6 @@ Dartboard = function (htmlContainer, canvasContainer, callbackFunction) {
             this.hitAmounts.MISSEDSCORES++;
         } else {
             this.hitAmounts.MISSEDBOARD++;
-            this.reset();
         }
         this.notify();
     };

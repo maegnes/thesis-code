@@ -5,7 +5,6 @@
  * @param canvasContainer - the <canvas/> element
  * @param callbackFunction - a optional callback. being called after every throw
  *
- * @constructor
  * @author Magnus Buk <MagnusBuk@gmx.de>
  */
 Dartboard = function (htmlContainer, canvasContainer, callbackFunction) {
@@ -424,7 +423,7 @@ Dartboard = function (htmlContainer, canvasContainer, callbackFunction) {
     };
 
     /**
-     * Get the area where the dart landed
+     * Get the score of the current throw/hit
      *
      * @param distance
      * @param field
@@ -467,7 +466,7 @@ Dartboard = function (htmlContainer, canvasContainer, callbackFunction) {
     };
 
     /**
-     * Resets the dartboard and removes the hits
+     * Redraws the dartboard and resets statistics
      */
     this.reset = function() {
         // Remove canvas

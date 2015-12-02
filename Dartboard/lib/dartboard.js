@@ -82,7 +82,7 @@ Dartboard = function (htmlContainer, canvasContainer, callbackFunction) {
      *
      * @type {number}
      */
-    this.increaseFactor = 2;
+    this.increaseFactor = 2.1;
 
     /**
      * init() called?
@@ -138,9 +138,50 @@ Dartboard = function (htmlContainer, canvasContainer, callbackFunction) {
     };
 
     /**
+     * Stores all scores
+     *
+     * @type {Array}
+     */
+    this.scores = [];
+
+    /**
      * Hit amounts grouped by area
      */
     this.hitAmounts = {};
+
+    /**
+     * The board numbers in clockwise direction starting with 20
+     * @type {number[]}
+     */
+    this.boardNumbers = [20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5];
+
+    /**
+     * Define fields with their angle periods to evaluate the hit number
+     *
+     * @type {*[]}
+     */
+    this.angles = [
+        [-99.01, -81], // 20
+        [-81, -63], // 1
+        [-63, -44.98], // 18
+        [-44.98, -26.97], // 4
+        [-26.97, -8.98], // 13
+        [-8.98, 9.02], // 6
+        [9.02, 27.03], // 10
+        [27.03, 45.03], // 15
+        [45.03, 63.04], // 2
+        [63.04, 81.02], // 17
+        [81.02, 99.00], // 3
+        [99.00, 116.98], // 19
+        [116.98, 134.98], // 7
+        [134.98, 152.98], // 16
+        [152.98, 170.96], // 8
+        [170.96, -171.04], // 11
+        [-171.04, -153.03], // 14
+        [-153.03, -135.03], // 9
+        [-135.03, -117.02], // 12
+        [-117.02, -99.01] // 5
+    ];
 
     /**
      * Initial calculations
@@ -333,7 +374,7 @@ Dartboard = function (htmlContainer, canvasContainer, callbackFunction) {
             e.layerY
         ];
 
-        // Calculate the distance to the center position
+        // get distance in mm between hit point and center
         var d =
             Math.round(
                 Math.sqrt(
@@ -341,34 +382,79 @@ Dartboard = function (htmlContainer, canvasContainer, callbackFunction) {
                 )
             ) / this.increaseFactor;
 
-        this.getArea(d);
+        var number = this.getField(e.layerX, e.layerY, d);
+        var score = this.getScore(d, number);
 
+        this.scores.push(score);
+
+        this.notify();
+
+    };
+
+    /**
+     * Calculates the scores field of the current hit
+     *
+     * @param x
+     * @param y
+     * @param distance distance between x and y
+     */
+    this.getField = function(x, y, distance) {
+        // First check for single bull, bullseye or 0
+        if (distance <= this.distDoubleBull) {
+            return 50;
+        } else if (distance <= this.distSingleBull) {
+            return 25;
+        } else if (distance > this.distOuterDouble) {
+            return 0;
+        } else {
+            var cY = y - this.coordinatesCenter[1];
+            var cX = x - this.coordinatesCenter[0];
+            var r = Math.atan2(cY, cX);
+            var deg = r * 180/Math.PI;
+            for(var i = 0; i < this.angles.length; i++) {
+                var from = this.angles[i][0];
+                var to = this.angles[i][1];
+                if (deg >= from && deg < to) {
+                    return this.boardNumbers[i];
+                }
+            }
+            // No match until here? Then it must be 11
+            return 11;
+        }
     };
 
     /**
      * Get the area where the dart landed
      *
      * @param distance
+     * @param field
      */
-    this.getArea = function(distance) {
-        if (distance < this.distDoubleBull) {
+    this.getScore = function(distance, field) {
+        if (distance <= this.distDoubleBull) {
             this.hitAmounts.BULLSEYE++;
-        } else if (distance < this.distSingleBull) {
+            return [50, "Bullseye", 'D'];
+        } else if (distance <= this.distSingleBull) {
             this.hitAmounts.SINGLEBULL++;
-        } else if (distance < this.distInnerTriple) {
+            return [25, "Single Bull", 'S'];
+        } else if (distance <= this.distInnerTriple) {
             this.hitAmounts.INNERSINGLE++;
-        } else if (distance < this.distOuterTriple) {
+            return [field, "S" + field, 'S'];
+        } else if (distance <= this.distOuterTriple) {
             this.hitAmounts.TRIPLE++;
-        } else if (distance < this.distInnerDouble) {
+            return [field * 3, "T" + field, 'T'];
+        } else if (distance <= this.distInnerDouble) {
             this.hitAmounts.OUTERSINGLE++;
-        } else if (distance < this.distOuterDouble) {
+            return [field, "S" + field, 'S'];
+        } else if (distance <= this.distOuterDouble) {
             this.hitAmounts.DOUBLE++;
-        } else if (distance < this.distBoardEdge) {
+            return [field * 2, "D" + field, 'D'];
+        } else if (distance <= this.distBoardEdge) {
             this.hitAmounts.MISSEDSCORES++;
+            return [0, "Missed Scores", 'N'];
         } else {
             this.hitAmounts.MISSEDBOARD++;
+            return [0, "Missed Board", 'N'];
         }
-        this.notify();
     };
 
     /**
@@ -376,7 +462,7 @@ Dartboard = function (htmlContainer, canvasContainer, callbackFunction) {
      */
     this.notify = function() {
         if ('function' === typeof this.callback) {
-            this.callback(this.hitAmounts, this.thrownDarts);
+            this.callback(this.hitAmounts, this.thrownDarts, this.scores);
         }
     };
 
@@ -388,9 +474,9 @@ Dartboard = function (htmlContainer, canvasContainer, callbackFunction) {
         this.canvas.beginPath();
         this.canvas.clearRect(0, 0, this.width, this.height);
         this.canvas.closePath();
-
         // Redraw the dartboard!
         this.thrownDarts = 0;
+        this.scores = [];
         this.resetHitAmounts();
         this.notify();
         this.draw();

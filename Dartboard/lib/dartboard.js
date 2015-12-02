@@ -204,7 +204,7 @@ Dartboard = function (htmlContainer, canvasContainer, callbackFunction) {
         var ref = this;
 
         // Handle the click event in the hit function
-        this.canvasContainer.addEventListener("click", function(e) {
+        this.canvasContainer.addEventListener("click", function (e) {
             ref.hit(e);
         });
 
@@ -324,7 +324,7 @@ Dartboard = function (htmlContainer, canvasContainer, callbackFunction) {
     /**
      * Draws the numbers into the areas
      */
-    this.drawNumbers = function() {
+    this.drawNumbers = function () {
 
         this.canvas.fillStyle = "#ffffff";
         this.canvas.font = 30 * this.increaseFactor + "px Arial";
@@ -397,7 +397,7 @@ Dartboard = function (htmlContainer, canvasContainer, callbackFunction) {
      * @param y
      * @param distance distance between x and y
      */
-    this.getField = function(x, y, distance) {
+    this.getField = function (x, y, distance) {
         // First check for single bull, bullseye or 0
         if (distance <= this.distDoubleBull) {
             return 50;
@@ -409,8 +409,8 @@ Dartboard = function (htmlContainer, canvasContainer, callbackFunction) {
             var cY = y - this.coordinatesCenter[1];
             var cX = x - this.coordinatesCenter[0];
             var r = Math.atan2(cY, cX);
-            var deg = r * 180/Math.PI;
-            for(var i = 0; i < this.angles.length; i++) {
+            var deg = r * 180 / Math.PI;
+            for (var i = 0; i < this.angles.length; i++) {
                 var from = this.angles[i][0];
                 var to = this.angles[i][1];
                 if (deg >= from && deg < to) {
@@ -428,7 +428,7 @@ Dartboard = function (htmlContainer, canvasContainer, callbackFunction) {
      * @param distance
      * @param field
      */
-    this.getScore = function(distance, field) {
+    this.getScore = function (distance, field) {
         if (distance <= this.distDoubleBull) {
             this.hitAmounts.BULLSEYE++;
             return [50, "Bullseye", 'D'];
@@ -459,7 +459,7 @@ Dartboard = function (htmlContainer, canvasContainer, callbackFunction) {
     /**
      * Call callback method (if given)
      */
-    this.notify = function() {
+    this.notify = function () {
         if ('function' === typeof this.callback) {
             this.callback(this.hitAmounts, this.thrownDarts, this.scores);
         }
@@ -468,7 +468,7 @@ Dartboard = function (htmlContainer, canvasContainer, callbackFunction) {
     /**
      * Redraws the dartboard and resets statistics
      */
-    this.reset = function() {
+    this.reset = function () {
         // Remove canvas
         this.canvas.beginPath();
         this.canvas.clearRect(0, 0, this.width, this.height);
@@ -484,7 +484,7 @@ Dartboard = function (htmlContainer, canvasContainer, callbackFunction) {
     /**
      * Method to reset the hit amounts
      */
-    this.resetHitAmounts = function() {
+    this.resetHitAmounts = function () {
         // Quick n dirty solution to clone an object
         this.hitAmounts = JSON.parse(JSON.stringify(this.defaultHitAmounts));
     };

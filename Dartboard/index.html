@@ -23,7 +23,7 @@
     <button id="btn-reset" type="button">RESET THROWS</button><br/><br/>
     <h1>Scores by area</h1>
     Thrown darts: <input class="scores" type="text" id="total" value="0"/><br/>
-    Score: <input class="scores" type="text" id="score" value="0"/>
+    Score: <input class="scores" type="text" id="score" value="0"/> Points
     <hr/>
     Bullseye: <input class="scores" type="text" id="BULLSEYE" value="0"/><br/>
     Single Bull: <input class="scores" type="text" id="SINGLEBULL" value="0"/><br/>
@@ -53,14 +53,14 @@
             }
             document.getElementById("total").value = thrownDarts;
 
-            var score = parseInt(document.getElementById("score").value);
+            var score = 0;
 
             // Get scores
             for (var i = 0; i < scores.length; i++) {
                 score += scores[i][0];
             }
 
-            document.getElementById("score").value = score + " Points";
+            document.getElementById("score").value = score;
         }
     );
 

@@ -6,6 +6,7 @@
  * @param callbackFunction - a optional callback. being called after every throw
  *
  * @constructor
+ * @author Magnus Buk <MagnusBuk@gmx.de>
  */
 Dartboard = function (htmlContainer, canvasContainer, callbackFunction) {
 
@@ -20,7 +21,7 @@ Dartboard = function (htmlContainer, canvasContainer, callbackFunction) {
     this.canvasContainer = canvasContainer;
 
     /**
-     * Callback method to provide the hit amounts to external sources
+     * Optional callback method to provide statistical data to external consumers
      */
     this.callback = callbackFunction;
 
@@ -82,7 +83,7 @@ Dartboard = function (htmlContainer, canvasContainer, callbackFunction) {
      *
      * @type {number}
      */
-    this.increaseFactor = 2.1;
+    this.increaseFactor = 2;
 
     /**
      * init() called?
@@ -346,7 +347,8 @@ Dartboard = function (htmlContainer, canvasContainer, callbackFunction) {
     };
 
     /**
-     * Mark a hit on the dartboard
+     * Marks a hit on the dartboard and evaluates the hit field/score
+     *
      * @param e
      */
     this.hit = function (e) {
@@ -363,7 +365,7 @@ Dartboard = function (htmlContainer, canvasContainer, callbackFunction) {
         this.canvas.fill();
         this.canvas.closePath();
 
-        // Now we calculate the distance between the center of the board and the hit
+        // Now we'll calculate the distance between the center of the board and the hit
         var middle = [
             this.coordinatesCenter[0],
             this.coordinatesCenter[1]
@@ -377,9 +379,7 @@ Dartboard = function (htmlContainer, canvasContainer, callbackFunction) {
         // get distance in mm between hit point and center
         var d =
             Math.round(
-                Math.sqrt(
-                    (Math.pow(middle[0] - hit[0], 2) + Math.pow(middle[1] - hit[1], 2))
-                )
+                Math.sqrt((Math.pow(middle[0] - hit[0], 2) + Math.pow(middle[1] - hit[1], 2)))
             ) / this.increaseFactor;
 
         var number = this.getField(e.layerX, e.layerY, d);

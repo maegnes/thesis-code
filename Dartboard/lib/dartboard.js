@@ -375,6 +375,8 @@ Dartboard = function (htmlContainer, canvasContainer, callbackFunction) {
             e.layerY
         ];
 
+        console.log(hit);
+
         // get distance in mm between hit point and center
         var d =
             Math.round(

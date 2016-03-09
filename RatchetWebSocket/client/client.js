@@ -5,8 +5,8 @@ connection.onopen = function () {
     connection.send("Neuer Client ist nun verbunden!");
 };
 
-connection.onerror = function (error) {
-    // Fehlerhandling
+connection.onclose = function (error) {
+    // Client hat die Verbindung getrennt
 };
 
 connection.onmessage = function (data) {
